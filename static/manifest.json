@@ -1,0 +1,21 @@
+{
+  "short_name": "VideoCall",
+  "name": "WebRTC Video Call App",
+  "icons": [
+    {
+      "src": "/static/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#667eea",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#764ba2"
+}

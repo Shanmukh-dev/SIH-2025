@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="auth-card card animate__animated animate__fadeIn">
+    <div class="card-header">
+        <i class="material-icons" style="font-size: 2.5rem;">login</i>
+        <h2 class="mt-2 mb-0">Welcome Back!</h2>
+        <p class="text-light-50 mb-0">Log in to your account to continue.</p>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="mb-3">
+                <label for="mobile_number" class="form-label">Mobile Number</label>
+                <input type="tel" class="form-control" id="mobile_number" name="mobile_number" value="{{ mobile_number if mobile_number else '' }}" placeholder="+1234567890" required autocomplete="tel">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-lg custom-btn-gradient">
+                <i class="material-icons me-2">login</i> Log In
+            </button>
+        </form>
+        <p class="text-center mt-4">
+            Don't have an account? <a href="{{ url_for('signup') }}" class="btn-link">Sign Up Here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    .auth-card {
+        margin-top: 80px; /* Adjust for header */
+        margin-bottom: 50px;
+    }
+    .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3); /* Primary gradient */
+        color: white;
+        text-align: center;
+        padding: 30px 20px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+    .card-header h2 {
+        font-weight: 700;
+        font-size: 2.2rem;
+    }
+    .card-header p {
+        font-size: 1.1rem;
+        opacity: 0.8;
+    }
+    .form-label {
+        font-weight: 500;
+        color: var(--text-light);
+    }
+</style>
+{% endblock %}

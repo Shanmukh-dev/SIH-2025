@@ -1,0 +1,190 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+/* --- Authentication Pages --- */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 2.5rem;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.auth-card:hover {
+    transform: translateY(-5px);
+}
+
+.auth-card h2 {
+    font-weight: 600;
+}
+
+/* --- Dashboard --- */
+.app-header {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.main-panel {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.main-panel .nav-tabs .nav-link {
+    padding: 1rem;
+    color: #6c757d;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.main-panel .nav-tabs .nav-link.active {
+    color: #0d6efd;
+    border-color: #0d6efd;
+    background-color: transparent;
+}
+
+.main-panel .nav-tabs .nav-link .material-icons {
+    vertical-align: middle;
+}
+
+/* Dialer */
+#dialer-input {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    border: none;
+    box-shadow: none;
+    background-color: #f8f9fa;
+}
+
+.dialpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.dialpad .dialpad-row {
+    display: contents;
+}
+
+.dialpad .btn {
+    font-size: 1.5rem;
+    padding: 1rem;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    background-color: #e9ecef;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+
+.dialpad .btn:hover {
+    background-color: #ced4da;
+}
+
+#call-btn {
+    border-radius: 50px;
+}
+
+#backspace-btn {
+    border-radius: 50px;
+}
+
+/* History & Contacts List */
+.list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.list-group-item .actions {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.list-group-item:hover .actions {
+    opacity: 1;
+}
+
+/* Video Call Container */
+.video-call-container {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    background-color: #000;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+#remote-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#local-video {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 25%;
+    max-width: 180px;
+    border-radius: 10px;
+    border: 2px solid #fff;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.call-controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    background: rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 50px;
+}
+
+.call-controls .btn {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.call-controls .btn-danger {
+     background-color: #dc3545;
+}
+
+.placeholder-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
+    border-radius: 15px;
+    background-color: #e9ecef;
+}
+
+/* --- Modals --- */
+.modal-content {
+    border-radius: 15px;
+}

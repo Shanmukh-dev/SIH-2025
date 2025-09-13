@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="text-center mb-5 fw-bold text-primary animate__animated animate__fadeInDown">Welcome, {{ user.name }}!</h1>
+
+    <div class="dashboard-grid">
+        <!-- Main Dialer & Call Area -->
+        <div class="dialer-call-area">
+            <div class="card mb-4 animate__animated animate__fadeInLeft">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3 class="mb-0">Dialer <i class="material-icons align-middle ms-2">dialpad</i></h3>
+                    <span class="badge bg-success py-2 px-3 fs-6 d-flex align-items-center">
+                        <i class="material-icons me-1">phone_android</i> My Number: {{ user.mobile_number }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="input-group mb-3 dialer-input-group">
+                        <input type="text" class="form-control form-control-lg text-center" id="dialerInput" placeholder="Enter number to call" aria-label="Number to call">
+                        <button class="btn btn-outline-secondary" type="button" id="clearDialerInput"><i class="material-icons">backspace</i></button>
+                    </div>
+                    <div class="dialer-keypad">
+                        <button type="button" class="btn btn-secondary" data-key="1">1</button>
+                        <button type="button" class="btn btn-secondary" data-key="2">2<br>ABC</button>
+                        <button type="button" class="btn btn-secondary" data-key="3">3<br>DEF</button>
+                        <button type="button" class="btn btn-secondary" data-key="4">4<br>GHI</button>
+                        <button type="button" class="btn btn-secondary" data-key="5">5<br>JKL</button>
+                        <button type="button" class="btn btn-secondary" data-key="6">6<br>MNO</button>
+                        <button type="button" class="btn btn-secondary" data-key="7">7<br>PQRS</button>
+                        <button type="button" class="btn btn-secondary" data-key="8">8<br>TUV</button>
+                        <button type="button" class="btn btn-secondary" data-key="9">9<br>WXYZ</button>
+                        <button type="button" class="btn btn-secondary" data-key="*">*</button>
+                        <button type="button" class="btn btn-secondary" data-key="0">0<br>+</button>
+                        <button type="button" class="btn btn-secondary" data-key="#">#</button>
+                    </div>
+                    <div class="d-grid gap-2 mt-4">
+                        <button type="button" class="btn action-btn btn-success btn-lg" id="startCallButton">
+                            <i class="material-icons me-2">call</i> Call
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Incoming/Ongoing Call Modal -->
+            <div class="modal fade" id="callModal" tabindex="-1" aria-labelledby="callModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="callModalLabel">Call In Progress</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="call-status mb-3">
+                                <p id="callStatusText" class="lead fs-4 fw-bold text-info">Connecting...</p>
+                                <p class="mb-0">With: <span id="remoteUserDisplay" class="text-primary"></span></p>
+                            </div>
+                            <div class="video-container mb-3">
+                                <video id="remoteVideo" autoplay playsinline></video>
+                                <video id="localVideo" autoplay muted playsinline></video>
+                            </div>
+                            <div class="call-controls">
+                                <button type="button" class="btn btn-secondary" id="toggleAudioBtn" data-bs-toggle="tooltip" data-bs-placement="top" title="Mute/Unmute Audio">
+                                    <i class="material-icons">mic</i>
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="toggleVideoBtn" data-bs-toggle="tooltip" data-bs-placement="top" title="Turn Video On/Off">
+                                    <i class="material-icons">videocam</i>
+                                </button>
+                                <button type="button" class="btn btn-danger" id="endCallBtn" data-bs-toggle="tooltip" data-bs-placement="top" title="End Call">
+                                    <i class="material-icons">call_end</i>
+                                </button>
+                            </div>
+                            <!-- Incoming Call Specific Buttons -->
+                            <div id="incomingCallButtons" class="d-grid gap-2 d-md-block mt-4" style="display: none !important;">
+                                <button type="button" class="btn btn-success btn-lg me-md-2" id="acceptCallBtn"><i class="material-icons me-2">call</i> Accept</button>
+                                <button type="button" class="btn btn-danger btn-lg" id="declineCallBtn"><i class="material-icons me-2">call_end</i> Decline</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Contacts & Call History Sidebar -->
+        <div class="sidebar-area">
+            <!-- Contacts Section -->
+            <div class="card mb-4 animate__animated animate__fadeInRight">
+                <div class="card-header">
+                    <h3>Contacts <i class="material-icons align-middle ms-2">contacts</i></h3>
+                </div>
+                <div class="card-body">
+                    <form action="{{ url_for('add_contact') }}" method="POST" class="mb-4">
+                        <div class="input-group mb-2">
+                            <input type="text" class="form-control" name="contact_name" placeholder="Contact Name" required>
+                        </div>
+                        <div class="input-group mb-2">
+                            <input type="tel" class="form-control" name="contact_mobile_number" placeholder="+1234567890" required>
+                            <button class="btn btn-primary" type="submit"><i class="material-icons">person_add</i></button>
+                        </div>
+                    </form>
+                    <div class="list-group list-group-flush">
+                        {% if contacts %}
+                            {% for contact in contacts %}
+                            <div class="contact-item">
+                                <div class="contact-info">
+                                    <strong>{{ contact.name }}</strong><br>
+                                    <small>{{ contact.mobile_number }}</small>
+                                    <span class="online-status-indicator" id="status-{{ contact.mobile_number.replace('+', '') }}" data-mobile="{{ contact.mobile_number }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Offline"></span>
+                                </div>
+                                <div class="contact-actions">
+                                    <button class="btn btn-sm btn-success call-contact-btn" data-number="{{ contact.mobile_number }}" data-name="{{ contact.name }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Call Contact"><i class="material-icons">call</i></button>
+                                    <form action="{{ url_for('delete_contact', contact_id=contact.id) }}" method="POST" class="d-inline ms-1" onsubmit="return confirm('Are you sure you want to delete this contact?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-placement="top" title="Delete Contact"><i class="material-icons">delete</i></button>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center text-muted">No contacts yet. Add some!</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call History Section -->
+            <div class="card animate__animated animate__fadeInRight">
+                <div class="card-header">
+                    <h3>Call History <i class="material-icons align-middle ms-2">history</i></h3>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% if call_history %}
+                            {% for call in call_history %}
+                            <div class="call-history-item {{ call.call_type }}">
+                                <div class="call-info">
+                                    {% if call.call_type == 'outgoing' %}
+                                        <i class="material-icons me-2 text-primary">call_made</i>
+                                        <span class="fw-bold">Called:</span> {{ call.contact_number }}
+                                    {% elif call.call_type == 'incoming' %}
+                                        <i class="material-icons me-2 text-success">call_received</i>
+                                        <span class="fw-bold">Received:</span> {{ call.contact_number }}
+                                    {% else %}
+                                        <i class="material-icons me-2 text-danger">call_missed</i>
+                                        <span class="fw-bold">Missed:</span> {{ call.contact_number }}
+                                    {% endif %}
+                                    <br>
+                                    <small class="text-muted">{{ call.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                                </div>
+                                <div class="call-actions">
+                                    <button class="btn btn-sm btn-info call-contact-btn" data-number="{{ call.contact_number }}" data-name="{{ call.contact_number }}" data-bs-toggle="tooltip" data-bs-placement="top" title="Call Back"><i class="material-icons">phone_forwarded</i></button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-center text-muted">No call history yet.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    /* Additional dashboard specific styles if needed */
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    @media (min-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 2fr 1fr; /* Main content | Sidebar */
+        }
+    }
+
+    .dialer-input-group .form-control {
+        font-size: 1.5rem;
+        height: 60px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .dialer-keypad .btn {
+        height: 70px;
+        line-height: 1.2;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .dialer-keypad .btn br {
+        display: block;
+        margin-top: 2px;
+    }
+    .dialer-keypad .btn.action-btn {
+        background: linear-gradient(45deg, var(--success-color), #218838);
+    }
+    .dialer-keypad .btn.action-btn:hover {
+        background: linear-gradient(45deg, #218838, var(--success-color));
+    }
+
+    .online-status-indicator {
+        width: 12px;
+        height: 12px;
+        margin-left: 8px;
+        background-color: var(--danger-color); /* Default offline */
+        box-shadow: 0 0 5px rgba(220, 53, 69, 0.4);
+        animation: pulse-offline 1.5s infinite;
+    }
+
+    .online-status-indicator.online {
+        background-color: var(--success-color); /* Online */
+        box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
+        animation: pulse-online 1.5s infinite;
+    }
+
+    @keyframes pulse-online {
+        0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
+        70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+    }
+
+    @keyframes pulse-offline {
+        0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+        70% { box-shadow: 0 0 0 5px rgba(220, 53, 69, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+    }
+
+    .call-history-item .material-icons {
+        font-size: 1.2rem;
+    }
+    .call-history-item.outgoing .material-icons { color: var(--primary-color); }
+    .call-history-item.incoming .material-icons { color: var(--success-color); }
+    .call-history-item.missed .material-icons { color: var(--danger-color); }
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background-color: #000;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .video-container #remoteVideo {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        background-color: #000;
+    }
+
+    .video-container #localVideo {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        width: 120px;
+        height: 90px;
+        border: 2px solid rgba(255, 255, 255, 0.8);
+        border-radius: 6px;
+        z-index: 10;
+        object-fit: cover;
+        background-color: #000;
+    }
+
+    .call-controls .btn {
+        background-color: #4a4a4a;
+        border-color: #555;
+        color: white;
+    }
+    .call-controls .btn:hover {
+        background-color: #6a6a6a;
+        border-color: #777;
+    }
+    .call-controls .btn-danger {
+        background-color: var(--danger-color);
+        border-color: var(--danger-color);
+    }
+    .call-controls .btn-danger:hover {
+        background-color: #c82333;
+        border-color: #bd2130;
+    }
+    .modal-content {
+        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+        border-color: var(--border-color);
+    }
+    .modal-header {
+        border-bottom-color: var(--border-color);
+    }
+    .modal-footer {
+        border-top-color: var(--border-color);
+    }
+    .btn-close-white {
+        filter: invert(1) grayscale(100%) brightness(200%); /* Makes the close button white */
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+
+        // Dialer input logic
+        const dialerInput = document.getElementById('dialerInput');
+        const keypadButtons = document.querySelectorAll('.dialer-keypad .btn');
+        const clearDialerInput = document.getElementById('clearDialerInput');
+
+        keypadButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const key = button.getAttribute('data-key');
+                dialerInput.value += key;
+            });
+        });
+
+        clearDialerInput.addEventListener('click', () => {
+            dialerInput.value = dialerInput.value.slice(0, -1);
+        });
+
+        // Call a contact button logic
+        document.querySelectorAll('.call-contact-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const contactNumber = this.getAttribute('data-number');
+                dialerInput.value = contactNumber;
+                // Optionally, automatically trigger call here or let user press the call button
+                // document.getElementById('startCallButton').click();
+            });
+        });
+    });
+</script>
+{% endblock %}

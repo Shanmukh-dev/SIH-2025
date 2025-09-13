@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<div class="auth-card card animate__animated animate__fadeIn">
+    <div class="card-header">
+        <i class="material-icons" style="font-size: 2.5rem;">verified_user</i>
+        <h2 class="mt-2 mb-0">Verify Your Mobile Number</h2>
+        <p class="text-light-50 mb-0">A 6-digit verification code has been sent to <strong>{{ mobile_number }}</strong>.</p>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('verify_otp') }}">
+            <div class="mb-3">
+                <label for="otp_code" class="form-label">Verification Code</label>
+                <input type="text" class="form-control form-control-lg text-center" id="otp_code" name="otp_code" placeholder="Enter 6-digit code" maxlength="6" pattern="\d{6}" required autofocus autocomplete="off">
+            </div>
+            <button type="submit" class="btn btn-primary w-100 btn-lg custom-btn-gradient">
+                <i class="material-icons me-2">check_circle</i> Verify Account
+            </button>
+        </form>
+        <p class="text-center mt-4">
+            Didn't receive the code?
+            <button type="button" id="resendOtpBtn" class="btn btn-link p-0 align-baseline" data-bs-toggle="tooltip" data-bs-placement="top" title="Resend OTP in 60 seconds">
+                Resend OTP <span id="countdown" class="ms-1"> (60s)</span>
+            </button>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<style>
+    .auth-card {
+        margin-top: 80px; /* Adjust for header */
+        margin-bottom: 50px;
+    }
+    .card-header {
+        background: linear-gradient(135deg, #007bff, #0056b3); /* Primary gradient */
+        color: white;
+        text-align: center;
+        padding: 30px 20px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+    }
+    .card-header h2 {
+        font-weight: 700;
+        font-size: 2.2rem;
+    }
+    .card-header p {
+        font-size: 1.1rem;
+        opacity: 0.8;
+    }
+    .form-label {
+        font-weight: 500;
+        color: var(--text-light);
+    }
+    .form-control-lg {
+        height: calc(2.5em + 1rem + 2px);
+        padding: .5rem 1rem;
+        font-size: 1.25rem;
+        border-radius: .5rem;
+    }
+    #otp_code {
+        letter-spacing: 15px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let countdownElement = document.getElementById('countdown');
+        let resendBtn = document.getElementById('resendOtpBtn');
+        let countdown = 60;
+        let timerInterval;
+
+        function startCountdown() {
+            resendBtn.disabled = true;
+            resendBtn.style.cursor = 'not-allowed';
+            countdownElement.style.display = 'inline';
+            countdownElement.textContent = ` (${countdown}s)`;
+
+            timerInterval = setInterval(function() {
+                countdown--;
+                countdownElement.textContent = ` (${countdown}s)`;
+                if (countdown <= 0) {
+                    clearInterval(timerInterval);
+                    resendBtn.disabled = false;
+                    resendBtn.style.cursor = 'pointer';
+                    countdownElement.style.display = 'none';
+                    countdown = 60; // Reset countdown
+                }
+            }, 1000);
+        }
+
+        resendBtn.addEventListener('click', function() {
+            fetch('{{ url_for('resend_otp') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Trigger a Bootstrap alert
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+                    alertDiv.setAttribute('role', 'alert');
+                    alertDiv.innerHTML = `
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('main .container').prepend(alertDiv);
+                    startCountdown(); // Restart countdown after successful resend
+                } else {
+                    const alertDiv = document.createElement('div');
+                    alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                    alertDiv.setAttribute('role', 'alert');
+                    alertDiv.innerHTML = `
+                        ${data.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    `;
+                    document.querySelector('main .container').prepend(alertDiv);
+                }
+            })
+            .catch(error => {
+                console.error('Error resending OTP:', error);
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                alertDiv.setAttribute('role', 'alert');
+                alertDiv.innerHTML = `
+                    An error occurred while trying to resend OTP.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('main .container').prepend(alertDiv);
+            });
+        });
+
+        // Start countdown on page load
+        startCountdown();
+    });
+</script>
+{% endblock %}

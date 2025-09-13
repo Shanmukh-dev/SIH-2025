@@ -1,0 +1,22 @@
+Flask
+Flask-SQLAlchemy
+Flask-SocketIO
+Flask-Bcrypt
+python-dotenv
+SQLAlchemy
+Twilio # For potential OTP SMS, though I'll simulate for now
+Werkzeug # For password hashing
+Flask-Cors # If frontend is on a different origin
+python-engineio
+python-socketio
+Flask-SQLAlchemy
+Flask-SocketIO
+python-dotenv
+Twilio
+Flask-SQLAlchemy
+Flask-SocketIO
+python-dotenv
+Twilio
+Werkzeug
+requests
+phonenumbers

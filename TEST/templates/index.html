@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center vh-100-minus-header-footer">
+    <div class="col-md-10 col-lg-8 text-center">
+        <div class="card p-5 shadow-lg bg-dark-gradient animate__animated animate__fadeInUp">
+            <div class="card-body">
+                <h1 class="display-3 mb-4 text-primary fw-bold">Connect Instantly with WebRTC</h1>
+                <p class="lead text-light-50 mb-5">
+                    Seamless video and audio calls, secure and reliable. Sign up or log in to start connecting with your friends and family.
+                </p>
+                <div class="d-grid gap-3 col-md-8 mx-auto">
+                    <a href="{{ url_for('signup') }}" class="btn btn-primary btn-lg custom-btn-gradient animate__animated animate__pulse animate__infinite">
+                        <i class="material-icons me-2">person_add</i> Get Started - Sign Up
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg custom-btn-outline animate__animated animate__fadeIn">
+                        <i class="material-icons me-2">login</i> Already Have an Account? Log In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block head %}
+<style>
+    .vh-100-minus-header-footer {
+        min-height: calc(100vh - 180px); /* Adjust based on header/footer height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .bg-dark-gradient {
+        background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .text-primary {
+        color: #007bff !important;
+    }
+    .text-light-50 {
+        color: rgba(248, 249, 250, 0.7) !important;
+    }
+    .custom-btn-gradient {
+        background: linear-gradient(45deg, #007bff, #0056b3);
+        border: none;
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        transition: all 0.3s ease;
+    }
+    .custom-btn-gradient:hover {
+        background: linear-gradient(45deg, #0056b3, #007bff);
+        box-shadow: 0 8px 20px rgba(0, 123, 255, 0.6);
+        transform: translateY(-3px);
+    }
+    .custom-btn-outline {
+        border: 2px solid rgba(248, 249, 250, 0.5);
+        color: rgba(248, 249, 250, 0.8);
+        transition: all 0.3s ease;
+    }
+    .custom-btn-outline:hover {
+        background-color: rgba(248, 249, 250, 0.1);
+        border-color: #007bff;
+        color: #007bff;
+        transform: translateY(-3px);
+    }
+    .animate__animated.animate__pulse.animate__infinite {
+        animation-duration: 2s; /* Adjust speed */
+        animation-iteration-count: infinite;
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+{% endblock %}
