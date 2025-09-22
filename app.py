@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
-from flask_bcrypt import Bcrypt
+
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from flask_cors import CORS
 from openai import OpenAI
@@ -38,7 +38,7 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(100), nullable=False)
     mobile = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
-
+    account_type = db.Column(db.String(20), nullable=False)
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -88,13 +88,13 @@ def signup():
         name = data.get('name')
         mobile = data.get('mobile')
         password = data.get('password')
-
+        account_type = data.get('account_type')
+        
         if User.query.filter_by(mobile=mobile).first():
             return jsonify({'success': False, 'message': 'Mobile number already registered.'}), 409
 
-        hashed_password = bcrypt.generate_password_hash(
-            password).decode('utf-8')
-        new_user = User(name=name, mobile=mobile, password=hashed_password)
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        new_user = User(name=name, mobile=mobile, password=hashed_password, account_type=account_type)
         db.session.add(new_user)
         db.session.commit()
         return jsonify({'success': True, 'message': 'User registered successfully!'}), 201

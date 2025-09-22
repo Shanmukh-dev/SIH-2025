@@ -11,25 +11,34 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="auth-container">
+    <div class="auth-container container">
         <div class="auth-card">
             <h2 class="text-center mb-4">Create Account</h2>
             <p class="text-center text-muted mb-4">Join our video calling platform today!</p>
-            <form id="signup-form">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="name" placeholder="Full Name" required>
-                    <label for="name">Full Name</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="tel" class="form-control" id="mobile" placeholder="Mobile Number" required>
-                    <label for="mobile">Mobile Number</label>
-                </div>
-                <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="password" placeholder="Password" required>
-                    <label for="password">Password</label>
-                </div>
-                <button type="submit" class="btn btn-primary w-100 btn-lg">Sign Up</button>
-            </form>
+<form id="signup-form">
+    <div class="form-floating mb-3">
+        <input type="text" class="form-control" id="name" placeholder="Full Name" required>
+        <label for="name">Full Name</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="tel" class="form-control" id="mobile" placeholder="Mobile Number" required>
+        <label for="mobile">Mobile Number</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="password" class="form-control" id="password" placeholder="Password" required>
+        <label for="password">Password</label>
+    </div>
+    <div class="form-floating mb-3">
+        <select class="form-select" id="account_type" required>
+            <option value="" disabled selected>Select Account Type</option>
+            <option value="patient">Patient</option>
+            <option value="pharmacist">Pharmacist</option>
+            <option value="doctor">Doctor</option>
+        </select>
+        <label for="account_type">Account Type</label>
+    </div>
+    <button type="submit" class="btn btn-primary w-100 btn-lg">Sign Up</button>
+</form>
             <div id="alert-container" class="mt-3"></div>
             <p class="mt-4 text-center text-muted">Already have an account? <a href="{{ url_for('login') }}">Log In</a></p>
         </div>

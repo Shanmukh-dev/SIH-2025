@@ -13,8 +13,7 @@ Flask-Bcrypt
 Flask-SocketIO
 Flask-Cors
 python-engineio
-gevent
-gevent-websocket
+
 Flask==2.2.3
 Flask-SQLAlchemy==3.0.3
 Flask-Login==0.6.2

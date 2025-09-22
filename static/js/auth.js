@@ -44,35 +44,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (signupForm) {
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const mobile = document.getElementById('mobile').value;
-            const password = document.getElementById('password').value;
+if (signupForm) {
+    signupForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const mobile = document.getElementById('mobile').value;
+        const password = document.getElementById('password').value;
+        const account_type = document.getElementById('account_type').value;
 
-            try {
-                const response = await fetch('/signup', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ name, mobile, password })
-                });
+        try {
+            const response = await fetch('/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, mobile, password, account_type })
+            });
 
-                const data = await response.json();
+            const data = await response.json();
 
-                if (response.ok) {
-                    showAlert(data.message, 'success');
-                    setTimeout(() => {
-                        window.location.href = '/login';
-                    }, 2000);
-                } else {
-                    showAlert(data.message || 'An error occurred.');
-                }
-            } catch (error) {
-                showAlert('Could not connect to the server.');
+            if (response.ok) {
+                showAlert(data.message, 'success');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 2000);
+            } else {
+                showAlert(data.message || 'An error occurred.');
             }
-        });
-    }
+        } catch (error) {
+            showAlert('Could not connect to the server.');
+        }
+    });
+}
 });
